@@ -1,0 +1,51 @@
+
+		- The Gains class is responsible for reading and writing the gains to a file.
+		- The Gains class is not responsible for any other functionality.
+
+
+	* Seperation of Concerns (SoC) is a design principle for separating a computer program into distinct sections, such that each section addresses a separate concern.
+
+	* Abstract Class: A class that is declared abstract using the abstract keyword. Abstract classes cannot be instantiated, but they can be subclassed. We can use abstract classes to define a template for a class.
+
+	* Virtual Navigation Property: A navigation property that is defined in the model but does not have a corresponding foreign key in the database. The virtual keyword is used to modify a method, property, indexer , or event declaration and allow for it to be overridden in a derived class.
+	
+	* Eager Loading: Eager loading is the process whereby a query for one type of entity also loads related entities as part of the query. Eager loading is achieved using the Include method. For example, the following query will load Blogs and related Posts in a single query;  
+			
+			var blogs = context.Blogs.Include(blog => blog.Posts).ThenInclude(post => post.Author); // Here, Blogs and related Posts and Authors are loaded.
+
+		By this way, we can load the related entities in a single query. This is called eager loading. If we know that we will need related data for an entity, we can use eager loading to load the related data in a single query. This will improve the performance of the application.
+
+	* Lazy Loading: Lazy loading is the process whereby an entity or collection of entities is automatically loaded from the database the first time that a property referring to the entity/entities is accessed. When lazy loading is enabled, the related data is transparently loaded from the database when the navigation property is accessed. Lazy loading is enabled by default in Entity Framework. Lazy loading is achieved using the virtual keyword. For example, the following query will load Blogs and related Posts when the Posts property is accessed.
+			var blogs = context.Blogs; // Here, only Blogs are loaded
+			foreach (var blog in blogs)
+			{
+				Console.WriteLine(blog.Posts.Count);
+			}
+		One problem with lazy loading is N+1 problem. The N+1 problem is a performance issue where a query is executed for the main entity and then a query is executed for each related entity. For example, the following code will execute a query to get all Blogs and then a query for each Blog to get the related Posts. 
+				var blogs = context.Blogs;
+			foreach (var blog in blogs)
+			{
+				Console.WriteLine(blog.Posts.Where(p => p.Author.PostId == blog.PostId).Count());
+			}
+
+	* Explicit Loading: Explicit loading is the process whereby an entity or collection of entities is loaded from the database only when we call the Load method on the related entities. Explicit loading is achieved using the Entry method. 
+	
+		For example, the following code will load Blogs and related Posts when the Load method is called.
+			var blogs = context.Blogs;
+			foreach (var blog in blogs)
+			{
+				context.Entry(blog).Collection(b => b.Posts).Load();
+			}
+	
+	*	Eager Loading Pitfalls
+		- Over-Fetching: Eager loading can lead to over-fetching. Over-fetching is a situation where more data is loaded than is actually needed.
+		- Cartesian Explosion: Eager loading can lead to a Cartesian explosion. A Cartesian explosion is a situation where the number of rows returned by a query is multiplied by the number of rows returned by another query. This can lead to a large number of rows being returned. 
+			var blogs = context.Blogs
+								.Include(b => b.Posts)         // Assume 10 posts per blog
+								.Include(b => b.Tags)          // Assume 5 tags per blog
+								.ToList();
+								// Here, 10 * 5 = 50 rows will be returned
+    * Lazy Loading Pitfalls
+		- N+1 Problem:
+		- Disposed Context : Lazy loading can lead to a disposed context exception. If the context is disposed and we try to access a navigation property, a disposed context exception will be thrown. We can avoid this by using eager loading or DTOs. When we use DTOs, we can load the related data in a single query and return the DTO to the client. The client can then access the related data without any issues.
+    * AutoMapper vs Mapster
