@@ -6,5 +6,5 @@ public class Author: BaseUser
 {
 
     // Nav Props
-    public virtual IEnumerable<Article> Articles { get; set; }
+    public virtual IEnumerable<Article>? Articles { get; set; }
 }
