@@ -2,6 +2,6 @@
 
 public interface IUpdatableEntity
 {
-    string UpdatedBy { get; set; }
-    DateTime UpdatedDate { get; set; }
+    string? UpdatedBy { get; set; }
+    DateTime? UpdatedDate { get; set; }
 }
