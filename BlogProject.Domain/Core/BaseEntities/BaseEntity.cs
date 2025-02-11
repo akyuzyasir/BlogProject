@@ -10,6 +10,6 @@ public abstract class BaseEntity : ICreatableEntity, IUpdatableEntity, IEntity
     public Status Status { get; set; }
     public string CreatedBy { get; set; } = null!;
     public DateTime CreatedDate { get; set; }
-    public string UpdatedBy { get; set; } = null!;
-    public DateTime UpdatedDate { get; set; }
+    public string? UpdatedBy { get; set; } = null!;
+    public DateTime? UpdatedDate { get; set; }
 }

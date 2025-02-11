@@ -49,3 +49,64 @@
 		- N+1 Problem:
 		- Disposed Context : Lazy loading can lead to a disposed context exception. If the context is disposed and we try to access a navigation property, a disposed context exception will be thrown. We can avoid this by using eager loading or DTOs. When we use DTOs, we can load the related data in a single query and return the DTO to the client. The client can then access the related data without any issues.
     * AutoMapper vs Mapster
+
+
+	* IEntityConfiguration: Is basically act as a marker. Prevents you from manually configuring entity configurations in onmodelcreating method in dbcontext class. 
+	
+			- builder.ApplyConfigurationsFromAssembly(typeof(IEntityConfiguration).Assembly);
+
+				This scans the entire assembly where IEntityConfiguration is defined.
+				It automatically applies all entity configurations found in that assembly.
+
+	* Entity Tracking : It is a feature of EF Core that keeps track of changes of entitites retrieved from database. When an entity is tracked, EF Core monitors modifications to those entities properties and automatically include those changes when SaveChanges() method is called. 
+			- Tracking: It is used by default. It would be better use it for UPDATE and DELETE operations.
+				When to use
+								* When using lazy-loading(only works with tracking)
+								* When needing concurrency control.
+								* When working with relationships (EF Core automatically loads related entities)
+				When to avoid|
+								* Fetching large datasets don'T need modifications
+
+			- AsNoTracking: It can be used in read-heavy queries. Since it decreases memory usage and tracking overhead, it improves performance. 
+				When to use|
+								* For read-heavy queries like Analytics, search results
+								* When querying detached entities that won't be modified.
+				When to avoid|
+								* Relying on Caching
+								* Lazy-loading
+
+	* NuGet Packages
+
+		- Microsoft.EntityFrameworkCore : To use EF Core
+		- Microsoft.EntityFrameworkCore.Design : To be able to create and apply migrations, db scaffolding.
+		- Microsoft.EntityFrameworkCore.Proxies : This allows lazy loading. with this, EF Core automatically loads related entities when they are accessed.
+		- Microsoft.EntityFrameworkCore.Tools : Allows you to use Add-Migration and Update-Database commands in package manager console (PMC)
+		- Microsoft.EntityFrameworkCore.SqlServer : In order to be able to connect Microsoft SQL Server
+		- Microsoft.AspNetCore.Identity.EntityFrameworkCore : Provides default identity tables such as AspNetUsers, AspNetRoles, AspNetUserRoles. Saves us from creating our own identity storage mechanisms. Used for user authentication and role-based authorization. (Admin - User - Superadmin)
+		- Microsoft.AspNetCore.Http.Abstractions : Provides HTTP related abstractions such as HttpContext, HttpRequest, HttpResponse. Is a must for web app.
+
+
+	* Pattern Matching
+		if (entry.Entity is not AuditableEntity entity)
+		{
+		    return;
+		}
+
+			- In this case, if the condition in the if statement met, than "entity" is automatically assigned the value of "entry.Entity" inside the if statement. So, later we can use entity.
+								
+
+	* ProjectToType() Mapster 
+	
+		* feature that translates entity-to-DTO mappings directly into SQL during EF Core query execution.
+		* Database Efficiency: Reduces data transferred by querying only needed fields
+
+		- Configure the mapping in a config class
+			TypeAdapterConfig<Invoice, InvoiceResponse>
+				.NewConfig()
+				.Map(dest => dest.Total, src => src.Items.Sum(i => i.Price));
+
+		- Use it in a query to optimize performance.
+			InvoiceResponse? invoiceResponse = await dbContext
+				.Invoices
+				.ProjectToType<InvoiceResponse>() // Mapster's equivalent
+				.FirstOrDefaultAsync(i => i.Id == request.InvoiceId, cancellationToken);
