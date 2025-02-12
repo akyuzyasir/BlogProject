@@ -1,25 +1,26 @@
 ﻿using BlogProject.Infrastructure.AppContext;
+using BlogProject.Infrastructure.Repositories.ArticleRepositories;
+using BlogProject.Infrastructure.Repositories.AuthorRepositories;
+using BlogProject.Infrastructure.Repositories.SubjectRepositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BlogProject.Infrastructure.Extensions
+namespace BlogProject.Infrastructure.Extensions;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
+        services.AddDbContext<AppDbContext>(options =>
         {
-            services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseLazyLoadingProxies();
-                options.UseSqlServer(configuration.GetConnectionString(AppDbContext.DevConnectionString));
-            });
-            return services;
-        }
+            options.UseLazyLoadingProxies();
+            options.UseSqlServer(configuration.GetConnectionString(AppDbContext.DevConnectionString));
+        });
+
+        services.AddScoped<ISubjectRepository, SubjectRepository>();
+        services.AddScoped<IArticleRepository, ArticleRepository>();
+        services.AddScoped<IAuthorRepository, AuthorRepository>();
+        return services;
     }
 }
