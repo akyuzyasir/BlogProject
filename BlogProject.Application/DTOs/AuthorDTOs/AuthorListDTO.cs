@@ -1,6 +1,6 @@
 ﻿namespace BlogProject.Application.DTOs.AuthorDTOs;
 
-public class ArticleListDTO
+public class AuthorListDTO
 {
     public Guid Id { get; set; }
     public string FirstName { get; set; } = null!;
