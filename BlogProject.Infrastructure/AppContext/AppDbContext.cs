@@ -91,7 +91,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser, IdentityRole, string
 
     private void SetIfAdded(EntityEntry<BaseEntity> entry, string userId)
     {
-        if (entry.State == EntityState.Added)
+        if (entry.State != EntityState.Added)
             return;
         entry.Entity.Status = Status.Added;
         entry.Entity.UpdatedDate= DateTime.UtcNow;
