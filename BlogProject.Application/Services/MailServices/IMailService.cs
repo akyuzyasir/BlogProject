@@ -2,7 +2,7 @@
 
 namespace BlogProject.Application.Services.MailServices;
 
-public interface IMailServices
+public interface IMailService
 {
     Task SendMailAsync(SendMailDTO sendMailDTO);
 }
