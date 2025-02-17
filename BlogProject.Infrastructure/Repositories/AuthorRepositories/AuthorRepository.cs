@@ -9,4 +9,8 @@ public class AuthorRepository : EFBaseRepository<Author>, IAuthorRepository
     public AuthorRepository(DbContext context) : base(context)
     {
     }
+    public async Task<Author?> GetByIdentityIdAsync(string identityId)
+    {
+        return await _table.FirstOrDefaultAsync(a => a.IdentityId == identityId);
+    }
 }
