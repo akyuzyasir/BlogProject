@@ -11,4 +11,5 @@ public interface IAuthorRepository : IAsyncRepository,
                                         IAsyncQueryableRepository<Author>,
                                         IAsyncOrderableRepository<Author>
 {
+    Task<Author?> GetByIdentityIdAsync(string identityId);
 }
