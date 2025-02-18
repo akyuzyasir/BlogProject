@@ -1,9 +1,13 @@
 using BlogProject.Infrastructure.Extensions;
+using BlogProject.Application.Extentions;
+using BlogProject.UI.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddApplicationServices();
+builder.Services.AddUIServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -15,6 +19,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
