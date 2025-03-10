@@ -1,13 +1,14 @@
 using BlogProject.Infrastructure.Extensions;
 using BlogProject.Application.Extentions;
-using BlogProject.UI.Extentions;
+using Microsoft.Extensions.Options;
+using BlogProject.UI.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 builder.Services.AddApplicationServices();
-builder.Services.AddUIServices();
+builder.Services.AddPresentationServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,8 +21,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRequestLocalization(app.Services
+    .GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 app.UseRouting();
 
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapStaticAssets();
